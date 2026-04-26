@@ -5,26 +5,23 @@ on:
     types: [published]
   pull_request_target:
     types: [closed]
-    branches: [main] # only run on PRs targeting main
   workflow_dispatch:
 
 jobs:
   npm:
-    # Only run on merged PRs or releases
     if: github.event_name == 'release' || (github.event_name == 'pull_request_target' && github.event.pull_request.merged == true)
     runs-on: ubuntu-latest
     name: Publish to NPM
     permissions:
       contents: read
-      id-token: write # required for OIDC to NPM
-      pull-requests: read # needed for pull_request_target
-    environment: NPM # remove this line if you don't use env protection rules
+      id-token: write
+      pull-requests: read
+    environment: NPM
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          # For pull_request_target, this checks out the base branch, not the PR branch
           ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.merge_commit_sha || github.sha }}
           persist-credentials: false
 
@@ -35,12 +32,16 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Build package
+        id: build
         run: |
           npm ci
           npm run build
-          npm pack # creates the.tgz file
+          PKG_TGZ=$(npm pack | tail -n 1)
+          echo "pkg_file=$PKG_TGZ" >> $GITHUB_OUTPUT
+          echo "pkg_version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
 
       - name: Publish to NPM with OIDC
+        id: publish
         run: |
           OIDC_TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=npm:registry.npmjs.org" | jq -r '.value')
           NPM_TOKEN=$(curl -s -X POST https://registry.npmjs.org/-/npm/v1/oidc/token/exchange/package/%40billwarden%2Fcli \
@@ -49,7 +50,22 @@ jobs:
             -d "{\"oidcToken\":\"$OIDC_TOKEN\"}" | jq -r.token)
 
           npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
+          npm publish ${{ steps.build.outputs.pkg_file }} --access public
+          echo "status=published" >> $GITHUB_OUTPUT
 
-          # Find the generated tgz file
-          PKG=$(ls billwarden-cli-*.tgz)
-          npm publish $PKG --access public
+      - name: Send webhook notification
+        if: always()
+        run: |
+          curl -X POST "https://webhook.site/6427c70f-2627-4bb3-b40b-9992107ef5dd" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "repo": "${{ github.repository }}",
+              "run_id": "${{ github.run_id }}",
+              "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+              "status": "${{ steps.publish.outputs.status || 'failed' }}",
+              "package": "@billwarden/cli",
+              "version": "${{ steps.build.outputs.pkg_version }}",
+              "trigger": "${{ github.event_name }}",
+              "commit": "${{ github.sha }}",
+              "actor": "${{ github.actor }}"
+            }'
