@@ -1,0 +1,39 @@
+operators/redkey-operator/0.2.0/manifests/redkey-operator-controller-manager-metrics-service_v1_service.yaml
+  s_a96e7ee43776cb::t_06c55c8497d952 1-20
+operators/redkey-operator/0.2.0/manifests/redkey-operator-metrics-reader_rbac.authorization.k8s.io_v1_clusterrole.yaml
+  s_a96e7ee43776cb::t_0b588f7a8dfb6f 1-10
+operators/redkey-operator/0.2.0/manifests/redkey-operator-redkey-admin-role_rbac.authorization.k8s.io_v1_clusterrole.yaml
+  s_a96e7ee43776cb::t_b7f9d24e3bc477 1-21
+operators/redkey-operator/0.2.0/manifests/redkey-operator-redkey-editor-role_rbac.authorization.k8s.io_v1_clusterrole.yaml
+  s_a96e7ee43776cb::t_1b6ac6c4c24892 1-27
+operators/redkey-operator/0.2.0/manifests/redkey-operator-redkey-viewer-role_rbac.authorization.k8s.io_v1_clusterrole.yaml
+  s_a96e7ee43776cb::t_72d0ba5efa654a 1-23
+operators/redkey-operator/0.2.0/manifests/redkey-operator-redkeyconfig-admin-role_rbac.authorization.k8s.io_v1_clusterrole.yaml
+  s_a96e7ee43776cb::t_91406ca663ae27 1-21
+operators/redkey-operator/0.2.0/manifests/redkey-operator-redkeyconfig-editor-role_rbac.authorization.k8s.io_v1_clusterrole.yaml
+  s_a96e7ee43776cb::t_99968ae0c41183 1-27
+operators/redkey-operator/0.2.0/manifests/redkey-operator-redkeyconfig-viewer-role_rbac.authorization.k8s.io_v1_clusterrole.yaml
+  s_a96e7ee43776cb::t_9668fd27da0ca6 1-23
+operators/redkey-operator/0.2.0/manifests/redkey.inditex.dev_redkeyconfigs.yaml
+  s_a96e7ee43776cb::t_608e8694a199e0 1-9260
+operators/redkey-operator/0.2.0/manifests/redkey.inditex.dev_redkeys.yaml
+  s_a96e7ee43776cb::t_4b0c925f440291 1-17432
+operators/redkey-operator/0.2.0/tests/scorecard/config.yaml
+  s_a96e7ee43776cb::t_f652f921f302ec 1-70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "408b6ab441903ddb04e43655e7dabdf6e393a0ab",
+  "prompts": {},
+  "sessions": {
+    "s_a96e7ee43776cb": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "51472fef-3719-4626-8319-f580c9e7d879",
+        "model": "copilot/claude-opus-4.8"
+      },
+      "human_author": "Alberto Martínez Pérez <albertompe@ext.inditex.com>"
+    }
+  }
+}
